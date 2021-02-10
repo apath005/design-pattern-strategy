@@ -41,17 +41,17 @@ public:
 class Select_Contains: public Select_Column
 {
 protected:
-        const Spreadsheet* sheet = sheet;
+	const Spreadsheet* sheet;
         std::string name;
         std::string subString;
 public:
-        Select_Contains(const Spreadsheet* sheet, const std::string& name, const std::string& s) : Select_Column(sheet, name)
+        Select_Contains(const Spreadsheet* sheet, const std::string& name, const std::string& subString) : Select_Column(sheet, name)
         {
         this->sheet = sheet;
         this->subString = subString;
         }
-        virtual bool select(const Spreadsheet* spreadsheet, int row)  const {
-        return spreadsheet->cell_data(row, column).find(subString) != std::string::npos;
+        virtual bool select(const Spreadsheet* sheet, int row)  const {
+        return sheet->cell_data(row, column).find(subString) != std::string::npos;
         }
         virtual bool select(const std::string& s) const {
         return true;
@@ -67,7 +67,7 @@ protected:
 public:
     	Select_Not(Select* select)
     	{
-        selectValue = select;
+        this->selectValue = select;
     	}
 
     	~Select_Not() {
@@ -85,8 +85,8 @@ protected:
     Select* selectRHS;
 public:
     Select_And(Select* lhs, Select* rhs) {
-         selectLHS = lhs;
-         selectRHS = rhs;
+         this->selectLHS = lhs;
+         this->selectRHS = rhs;
     }
 
     ~Select_And() { delete selectLHS; delete selectRHS; }
@@ -107,8 +107,8 @@ protected:
     Select* selectRHS;
 public:
     Select_Or(Select* lhs, Select* rhs) {
-        selectLHS = lhs;
-        selectRHS = rhs;
+        this->selectLHS = lhs;
+        this->selectRHS = rhs;
     }
     
     ~Select_Or() { delete selectLHS; delete selectRHS; }
