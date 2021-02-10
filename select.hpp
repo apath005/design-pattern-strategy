@@ -76,7 +76,45 @@ public:
     	virtual bool select(const Spreadsheet* sheet, int row) const {
         return !selectValue->select(sheet, row);
     	}
+};
 
+class Select_And : public Select_Column {
+protected:
+    const Spreadsheet* sheet;
+    std::string name;
+public:
+    Select_And(const Spreadsheet* sheet, const std::string& name) : Select_Column(sheet, name) {
+        this->sheet = sheet;
+        this->name = name;
+    }
+
+    bool select(Select* lhs, Select* rhs) const {
+        if (lhs->select(sheet, column) == true && rhs->select(sheet, column) == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+};
+
+class Select_Or : public Select_Column {
+protected:
+    const Spreadsheet* sheet;
+    std::string name;
+public:
+    Select_Or(const Spreadsheet* sheet, const std::string& name) : Select_Column(sheet, name) {
+        this->sheet = sheet;
+        this->name = name;
+    }
+    bool select(Select* lhs, Select* rhs) const {
+        if (lhs->select(sheet, column) == true || rhs->select(sheet, column) == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 };
 
 #endif //__SELECT_HPP__
