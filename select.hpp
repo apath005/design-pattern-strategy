@@ -38,6 +38,48 @@ public:
     virtual bool select(const std::string& s) const = 0;
 };
 
+class Select_Contains: public Select_Column
+{
+protected:
+        const Spreadsheet* sheet = sheet;
+        std::string name;
+        std::string subString;
+public:
+        Select_Contains(const Spreadsheet* sheet, const std::string& name, const std::string& s) : Select_Column(sheet, name)
+        {
+        this->sheet = sheet;
+        this->subString = subString;
+        }
+        virtual bool select(const Spreadsheet* spreadsheet, int row)  const {
+        return spreadsheet->cell_data(row, column).find(subString) != std::string::npos;
+        }
+        virtual bool select(const std::string& s) const {
+        return true;
+
+        }
+};
+
+class Select_Not: public Select_Column
+{
+protected:
+        const Spreadsheet* sheet = sheet;
+        std::string name;
+        std::string subString;
+public:
+        Select_Not(const Spreadsheet* sheet, const std::string& name, const std::string& s) : Select_Column(sheet, name)
+        {
+        this->sheet = sheet;
+        this->subString = subString;
+        }
+        virtual bool select(const Spreadsheet* spreadsheet, int row)  const {
+        return spreadsheet->cell_data(row, column).find(subString) != std::string::npos;
+        }
+        virtual bool select(const std::string& s) const {
+        return false;
+
+        }
+};
+
 class Select_And : public Select_Column {
 protected:
     const Spreadsheet* sheet;
@@ -75,47 +117,6 @@ public:
             return false;
         }
     }
-};
-
-class Select_Contains: public Select_Column
-{
-protected:
-	const Spreadsheet* sheet = sheet;
-	const Select_Column* a = a;
-	const Select_Column* b = b;
-	std::string name;
-	std::string s;
-public:
-	Select_Contains(const Spreadsheet* sheet, const std::string& name, const std::string& s) : Select_Column(sheet, name)
-	{
-	this->sheet = sheet;
-	this->name = name;
-	}
-	virtual bool select(const std::string& s) const {
-	if (a->select(sheet, column) == b->select(sheet, column) == true) {
-	return true;
-	}
-	}
-};
-
-class Select_Not: public Select_Column
-{ 
-protected:
-        const Spreadsheet* sheet = sheet;
-        const Select_Column* a = a;
-        const Select_Column* b = b;
-        std::string name;
-public:
-        Select_Not(const Spreadsheet* sheet, const std::string& name, const std::string& s) : Select_Column(sheet, name)
-        {
-        this->sheet = sheet;
-        this->name = name;
-        }
-        virtual bool select(const std::string& s) const {
-        if (a->select(sheet, column) == b->select(sheet, column) == false) {
-        return true;
-        }
-        }
 };
 
 #endif //__SELECT_HPP__
