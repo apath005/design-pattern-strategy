@@ -80,18 +80,20 @@ public:
         }
 };
 
-class Select_And : public Select_Column {
+class Select_And : public Select {
 protected:
-    const Spreadsheet* sheet;
-    std::string name;
+    Select* selectLHS;
+    Select* selectRHS;
 public:
-    Select_And(const Spreadsheet* sheet, const std::string& name) : Select_Column(sheet, name) {
-        this->sheet = sheet;
-        this->name = name;
+    Select_And(Select* lhs, Select* rhs) {
+         selectLHS = lhs;
+         selectRHS = rhs;
     }
 
-    bool select(Select* lhs, Select* rhs) const {
-        if (lhs->select(sheet, column) == true && rhs->select(sheet, column) == true) {
+    ~Select_And() { delete selectLHS; delete selectRHS; }
+
+    bool select(const Spreadsheet* sheet, int row) const {
+        if (selectLHS->select(sheet, row) == true && selectRHS->select(sheet, row) == true) {
             return true;
         }
         else {
@@ -100,17 +102,17 @@ public:
     }
 };
 
-class Select_Or : public Select_Column {
+class Select_Or : public Select {
 protected:
-    const Spreadsheet* sheet;
-    std::string name;
+    Select* selectLHS;
+    Select* selectRHS;
 public:
-    Select_Or(const Spreadsheet* sheet, const std::string& name) : Select_Column(sheet, name) {
-        this->sheet = sheet;
-        this->name = name;
+    Select_Or(Select* lhs, Select* rhs) {
+        selectLHS = lhs;
+        selectRHS = rhs;
     }
-    bool select(Select* lhs, Select* rhs) const {
-        if (lhs->select(sheet, column) == true || rhs->select(sheet, column) == true) {
+    bool select(const Spreadsheet* sheet, int row) const {
+        if (selectLHS->select(sheet, row) == true || selectRHS->select(sheet, row) == true) {
             return true;
         }
         else {
