@@ -110,6 +110,9 @@ public:
         selectLHS = lhs;
         selectRHS = rhs;
     }
+    
+    ~Select_Or() { delete selectLHS; delete selectRHS; }
+    
     bool select(const Spreadsheet* sheet, int row) const {
         if (selectLHS->select(sheet, row) == true || selectRHS->select(sheet, row) == true) {
             return true;
