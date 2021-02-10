@@ -59,25 +59,24 @@ public:
     	}
 };
 
-class Select_Not: public Select_Column
-{ 
+class Select_Not : public Select
+{
 protected:
-        const Spreadsheet* sheet = sheet;
-        std::string name;
-        std::string subString;
-public:
-        Select_Not(const Spreadsheet* sheet, const std::string& name, const std::string& s) : Select_Column(sheet, name)
-        {
-        this->sheet = sheet;
-        this->subString = subString;
-        }
-        virtual bool select(const Spreadsheet* spreadsheet, int row)  const {
-        return spreadsheet->cell_data(row, column).find(subString) != std::string::npos;
-        }
-        virtual bool select(const std::string& s) const {
-        return false;
+    	Select* selectValue;
 
-        }
+public:
+    	Select_Not(Select* select)
+    	{
+        selectValue = select;
+    	}
+
+    	~Select_Not() {
+        delete selectValue;
+    	}
+    	virtual bool select(const Spreadsheet* sheet, int row) const {
+        return !selectValue->select(sheet, row);
+    	}
+
 };
 
 #endif //__SELECT_HPP__
